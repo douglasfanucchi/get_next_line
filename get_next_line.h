@@ -18,7 +18,7 @@
 
 char	*get_next_line(int fd);
 size_t	ft_strlen(const char *s);
-char	*ft_strjoin(char *s1, char *s2);
+char	*ft_strjoin(char *s1, char *s2, size_t line_len);
 char	*get_buffer(int fd);
 char	ft_isline(char *str);
 char	*read_buffer(char *buffer);

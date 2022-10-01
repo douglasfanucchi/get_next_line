@@ -12,16 +12,14 @@
 
 #include "get_next_line.h"
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin(char *s1, char *s2, size_t line_len)
 {
 	char	*result;
 	size_t	result_len;
-	size_t	s1_len;
 	size_t	s2_len;
 
-	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
-	result_len = s1_len + s2_len;
+	result_len = line_len + s2_len;
 	result = malloc((result_len + 1) * sizeof(char));
 	if (result == NULL)
 		return (NULL);
@@ -30,8 +28,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	while (*s2)
 		*result++ = *s2++;
 	*result = 0;
-	free(s1 - s1_len);
-	free(s2 - s2_len);
+	free(s1 - line_len);
 	return (result - result_len);
 }
 
@@ -80,17 +77,21 @@ char	*get_next_line(int fd)
 {
 	char	*buffer;
 	char	*line;
+	size_t	line_len;
+	char	*readed;
 
-	if (BUFFER_SIZE < 0)
-		return (NULL);
 	buffer = get_buffer(fd);
 	line = NULL;
+	line_len = 0;
 	while (buffer != NULL)
 	{
 		if (line == NULL)
 			line = ft_strdup("");
-		line = ft_strjoin(line, read_buffer(buffer));
-		if (ft_strchr(line, '\n'))
+		readed = read_buffer(buffer);
+		line = ft_strjoin(line, readed, line_len);
+		line_len += ft_strlen(readed);
+		free(readed);
+		if (line[line_len - 1] == '\n')
 			return (line);
 		buffer = get_buffer(fd);
 	}
