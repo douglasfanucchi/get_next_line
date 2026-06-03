@@ -32,3 +32,18 @@ TEST(GetNextLine, itShouldReturnCharactersUntilTheFirstBreaklineChar) {
 	close(fd[0]);
 	close(fd[1]);
 }
+
+TEST(GetNextLine, itShouldReturnCharactersFromTheSecondLineOnSecondCall) {
+	int fd[2];
+	pipe2(fd, O_NONBLOCK);
+	write(fd[1], "hello\nworld\n", 12);
+	free(get_next_line(fd[0]));
+
+	char *result = get_next_line(fd[0]);
+
+	ASSERT_STREQ("world\n", result);
+
+	free(result);
+	close(fd[0]);
+	close(fd[1]);
+}
