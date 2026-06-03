@@ -15,3 +15,20 @@ TEST(FTlstaddback, itShouldAddANodeToTheEndOfAnEmptyList) {
 
 	free(node);
 }
+
+TEST(FTlstaddback, itShouldAddANodeIntoTheEndOfANonEmptyListAndUpdateItsTail)
+{
+	t_list *node = (t_list *)malloc(sizeof(t_list));
+	node->c = 'A';
+	node->next = NULL;
+	t_list *tail = node;
+
+	ft_lstadd_back(&tail, 'B');
+
+	ASSERT_NE(node, tail);
+	ASSERT_EQ(node->next, tail);
+	ASSERT_EQ('B', tail->c);
+
+	free(node);
+	free(tail);
+}
