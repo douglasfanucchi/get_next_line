@@ -53,3 +53,17 @@ TEST(GetNextLine, itShouldReturnNULLOnError) {
 
 	ASSERT_EQ(NULL, result);
 }
+
+TEST(GetNextLine, itShouldReturnNULLWhenThereIsNothingElseToRead) {
+	int fd[2];
+	pipe2(fd, O_NONBLOCK);
+	write(fd[1], "hello\n", 6);
+	free(get_next_line(fd[0]));
+
+	char *result = get_next_line(fd[0]);
+
+	ASSERT_EQ(NULL, result);
+
+	close(fd[0]);
+	close(fd[1]);
+}
