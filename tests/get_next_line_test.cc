@@ -67,3 +67,26 @@ TEST(GetNextLine, itShouldReturnNULLWhenThereIsNothingElseToRead) {
 	close(fd[0]);
 	close(fd[1]);
 }
+
+TEST(GetNextLine, itShouldReturnOnlyJumplineCharacter) {
+	int fd[2];
+	pipe2(fd, O_NONBLOCK);
+	write(fd[1], "\n\n\n", 3);
+
+	char *result = get_next_line(fd[0]);
+
+	ASSERT_STREQ("\n", result);
+	free(result);
+
+	result = get_next_line(fd[0]);
+	ASSERT_STREQ("\n", result);
+
+	free(result);
+	result = get_next_line(fd[0]);
+
+	ASSERT_STREQ("\n", result);
+	free(result);
+
+	close(fd[0]);
+	close(fd[1]);
+}
