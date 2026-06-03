@@ -4,12 +4,12 @@ extern "C" {
 	#include <get_next_line.h>
 }
 
-TEST(FTlsttostr, itShouldConvertAnEmptyListToEmptyString) {
+TEST(FTlsttostr, itShouldReturnNULLOnEmptyList) {
 	t_list	*node = NULL;
 
 	char *result = ft_lsttostr(node);
 
-	ASSERT_STREQ("", result);
+	ASSERT_EQ(NULL, result);
 
 	free(result);
 }
