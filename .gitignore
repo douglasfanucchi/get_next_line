@@ -1,0 +1,4 @@
+tests/build
+*.a
+*.o
+*.out
