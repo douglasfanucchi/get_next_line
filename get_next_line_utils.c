@@ -46,3 +46,15 @@ char	*ft_lsttostr(t_list *node)
 	result[size] = 0;
 	return (result);
 }
+
+void	ft_lstclear(t_list *node)
+{
+	t_list	*tmp;
+
+	while (node)
+	{
+		tmp = node;
+		node = node->next;
+		free(tmp);
+	}
+}

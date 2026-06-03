@@ -16,5 +16,6 @@ typedef struct s_list	{
 char	*get_next_line(int fd);
 void	ft_lstadd_back(t_list **tail, char c);
 char	*ft_lsttostr(t_list *node);
+void	ft_lstclear(t_list *node);
 
 #endif
