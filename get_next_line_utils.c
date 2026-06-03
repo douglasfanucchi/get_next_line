@@ -34,6 +34,8 @@ char	*ft_lsttostr(t_list *node)
 	size_t	size;
 	char	*result;
 
+	if (!node)
+		return ((void *)0);
 	i = 0;
 	size = ft_lstsize(node);
 	result = (char *)malloc(sizeof(char) * (size + 1));
