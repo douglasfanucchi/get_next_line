@@ -47,3 +47,9 @@ TEST(GetNextLine, itShouldReturnCharactersFromTheSecondLineOnSecondCall) {
 	close(fd[0]);
 	close(fd[1]);
 }
+
+TEST(GetNextLine, itShouldReturnNULLOnError) {
+	char *result = get_next_line(-1);
+
+	ASSERT_EQ(NULL, result);
+}
