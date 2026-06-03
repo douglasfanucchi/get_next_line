@@ -1,0 +1,20 @@
+#include <gtest/gtest.h>
+
+extern "C" {
+	#include <fcntl.h>
+	#include <get_next_line.h>
+}
+
+TEST(GetNextLine, itShouldReadLineFromAFileDescriptor) {
+	int fd[2];
+	pipe2(fd, O_NONBLOCK);
+	write(fd[1], "hello world!\n", 13);
+
+	char *result = get_next_line(fd[0]);
+
+	ASSERT_STREQ("hello world!\n", result);
+
+	free(result);
+	close(fd[0]);
+	close(fd[1]);
+}
