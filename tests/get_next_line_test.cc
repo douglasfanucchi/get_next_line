@@ -18,3 +18,17 @@ TEST(GetNextLine, itShouldReadLineFromAFileDescriptor) {
 	close(fd[0]);
 	close(fd[1]);
 }
+
+TEST(GetNextLine, itShouldReturnCharactersUntilTheFirstBreaklineChar) {
+	int fd[2];
+	pipe2(fd, O_NONBLOCK);
+	write(fd[1], "hello\nworld\n", 12);
+
+	char *result = get_next_line(fd[0]);
+
+	ASSERT_STREQ("hello\n", result);
+
+	free(result);
+	close(fd[0]);
+	close(fd[1]);
+}
