@@ -1,4 +1,4 @@
-#include <get_next_line.h>
+#include "get_next_line.h"
 
 static size_t	ft_lstsize(t_list *node)
 {
