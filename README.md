@@ -8,13 +8,13 @@ This is a function, written in C language, to read lines from a file descriptor.
 
 Given a file descriptor that references a text file, socket, standard input, pipe etc., it reads one line and return it in a freeable memory. In further calls, it will return the line right next to the previous one.
 
-In case of `EOF`, invalid file descriptor or the file has no more lines to be readed, the function returns `NULL`.
+In case of `EOF` or invalid file descriptor, the function returns `NULL`.
 
 It identifies the end of a line by the character `\n`. All returned lines has the `\n` character at the end of the string, except the last line if the file does not end with a `\n`.
 
 For binary files it has undefined behavior.
 
-Both time and space complexity of the function is `O(n)` where `n` stands for the length of the line.
+Both time and space complexity of the function are `O(n)` where `n` stands for the length of the line.
 
 ## Instructions
 
@@ -57,7 +57,7 @@ int main()
 }
 ```
 
-will print `hello world\n` and `NIL` on the terminal, since `get_next_line` reads the line on the first call and returns `NULL` on the second one.
+will print `hello world\n` and `NIL` on the terminal, since `get_next_line` returns the line on the first call and returns `NULL` on the second one.
 
 
 To compile and execute the example, you should run `cc get_next_line.c get_next_line_utils.c main.c` and execute by running `./a.out`.
