@@ -47,3 +47,21 @@ TEST(Buffer, itShouldGetNextCharFromBuffer) {
 	close(fd[1]);
 	buffer.free(&buffer);
 }
+
+TEST(Buffer, bufferShouldHaveEmptyStateAfterGettingAllCharsFromIt)
+{
+	t_buffer buffer;
+	int fd[2];
+	pipe2(fd, O_NONBLOCK);
+	write(fd[1], "hello world", 11);
+	initialize_buffer(&buffer, fd[0]);
+	buffer.fill(&buffer);
+
+	for(int i = 0; i < fmin(11, BUFFER_SIZE); i++)
+		buffer.get_next_char(&buffer);
+	
+	ASSERT_TRUE(buffer.is_empty(buffer));
+	close(fd[0]);
+	close(fd[1]);
+	buffer.free(&buffer);
+}
