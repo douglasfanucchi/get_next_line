@@ -1,68 +1,75 @@
 #include "get_next_line.h"
+#include <stdio.h>
 
-static size_t	ft_strlen(char *str)
+static char	is_empty(t_buffer buffer)
 {
-	size_t	size;
-
-	size = 0;
-	while (str[size])
-		size++;
-	return(size);
+	return (!buffer.bytes || !buffer.bytes[buffer.i]);
 }
 
-static void	ft_memcpy(void *dest, void *src, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < n)
-	{
-		((char *)dest)[i] = ((char *)src)[i];
-		i++;
-	}
-}
-
-static int fill_buffer(char *buffer, int fd)
+static int fill(t_buffer *buffer)
 {
 	int	readed;
 
-	readed = read(fd, buffer, BUFFER_SIZE);
-	if (readed >= 0)
-		buffer[readed] = 0;
+	buffer->i = 0;
+	if (!buffer->bytes)
+		buffer->bytes = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	readed = read(buffer->fd, buffer->bytes, BUFFER_SIZE);
+	if (readed < 0)
+	{
+		buffer->free(buffer);
+		return (readed);
+	}
+	buffer->bytes[readed] = 0;
 	return (readed);
 }
 
-static int move_bytes_into_buffer(char *buffer, int j)
+static void	free_buffer(t_buffer *buffer)
 {
-	ft_memcpy(buffer, buffer + j + 1, ft_strlen(buffer + j + 1) + 1);
-	return (1);
+	free(buffer->bytes);
+	buffer->bytes = NULL;
+}
+
+static char	get_next_char(t_buffer *buffer)
+{
+	return buffer->bytes[buffer->i++];
+}
+
+void	initialize_buffer(t_buffer *buffer, int fd)
+{
+	buffer->is_empty = is_empty;
+	buffer->fill = fill;
+	buffer->free = free_buffer;
+	buffer->get_next_char = get_next_char;
+	buffer->fd = fd;
+	buffer->bytes = NULL;
 }
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1];
-	t_list		*line;
-	t_list		*tail;
-	size_t		j;
-	char		*result;
+	static t_buffer	buffer;
+	t_list			*head;
+	t_list			*tail;
+	char			*result;
 
-	line = (void *)0;
-	tail = (void *)0;
-	j = 0;
-	if (!buffer[0])
-		fill_buffer(buffer, fd);
-	while (buffer[j])
+	tail = NULL;
+	head = NULL;
+	if (!buffer.fill)
+		initialize_buffer(&buffer, fd);
+	if (buffer.is_empty(buffer))
+		buffer.fill(&buffer);
+	while (!buffer.is_empty(buffer))
 	{
-		ft_lstadd_back(&tail, buffer[j]);
-		if (!line)
-			line = tail;
-		if (buffer[j] == '\n' && move_bytes_into_buffer(buffer, j))
+		ft_lstadd_back(&tail, buffer.get_next_char(&buffer));
+		if (!head)
+			head = tail;
+		if (tail->c == '\n')
 			break ;
-		j++;
-		if (!buffer[j] && fill_buffer(buffer, fd) >= 0)
-			j = 0;
+		if (buffer.is_empty(buffer))
+			buffer.fill(&buffer);
 	}
-	result = ft_lsttostr(line);
-	ft_lstclear(line);
+	if (buffer.is_empty(buffer))
+		buffer.free(&buffer);
+	result = ft_lsttostr(head);
+	ft_lstclear(head);
 	return (result);
 }
