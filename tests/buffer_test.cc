@@ -32,3 +32,18 @@ TEST(Buffer, itShouldFillBufferWithBytesFromSpecifiedFdAndFreeIt) {
 	close(fd[0]);
 	close(fd[1]);
 }
+
+TEST(Buffer, itShouldGetNextCharFromBuffer) {
+	t_buffer buffer;
+	int fd[2];
+	pipe2(fd, O_NONBLOCK);
+	write(fd[1], "hello world", 11);
+	initialize_buffer(&buffer, fd[0]);
+	buffer.fill(&buffer);
+
+	ASSERT_EQ('h', buffer.get_next_char(&buffer));
+
+	close(fd[0]);
+	close(fd[1]);
+	buffer.free(&buffer);
+}
