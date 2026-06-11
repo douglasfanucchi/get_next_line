@@ -1,5 +1,4 @@
 #include "get_next_line.h"
-#include <stdio.h>
 
 static char	is_empty(t_buffer buffer)
 {
